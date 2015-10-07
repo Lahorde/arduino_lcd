@@ -22,7 +22,6 @@
 class LCDFactory {
 public:
 	typedef uint8_t LCDType;
-
 	static const LCDType LCM1602_LCD = 0;
 	static const LCDType FUNDUINO_I2C_LCD = LCM1602_LCD + 1;
 	static const LCDType ADAFRUIT_I2C_LCD = FUNDUINO_I2C_LCD + 1;
@@ -32,6 +31,7 @@ private:
 	static LCDFactory* instance;
 
 public:
+	virtual ~LCDFactory(){};
 	static LCDFactory* getInstance(void)
 	{
 		if(instance == NULL){
@@ -40,39 +40,25 @@ public:
 		return instance;
 	}
 
-	virtual LCDI2C* createLCD(LCDType lcdType, uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows)
-	{
-		if(lcdType == FUNDUINO_I2C_LCD
-				|| lcdType == LCM1602_LCD)
-		{
-			return new LCM1602(lcd_addr, lcd_cols, lcd_rows);
-		}
-		else if(lcdType == ADAFRUIT_I2C_LCD
-				|| lcdType == MCP23008_LCD)
-		{
-			return new MCP23008(lcd_addr, lcd_cols, lcd_rows);
-		}
-		return NULL;
-	}
+	/**
+	 * Instantiate an I2C LCD of given type at given i2c address
+	 * @param lcdType
+	 * @param lcd_addr
+	 * @param lcd_cols
+	 * @param lcd_rows
+	 * @return instantiated LCD if successful, NULL otherwise
+	 */
+	virtual LCDI2C* createLCD(LCDType lcdType, uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows);
 
-
-	virtual LCDI2C* createLCD(LCDType lcdType, uint8_t lcd_cols, uint8_t lcd_rows)
-	{
-		if(lcdType == LCM1602_LCD)
-		{
-			return new LCM1602(LCM1602::LCM1602_DEFAULT_ADDRESS, lcd_cols, lcd_rows);
-		}
-		else if(FUNDUINO_I2C_LCD){
-			/** default configuration */
-			return new LCM1602(LCM1602::LCM1602_DEFAULT_ADDRESS + B00000111, lcd_cols, lcd_rows);
-		}
-		else if(lcdType == ADAFRUIT_I2C_LCD
-				|| lcdType == MCP23008_LCD)
-		{
-			return new MCP23008(MCP23008::MCP23008_DEFAULT_ADDRESS, lcd_cols, lcd_rows);
-		}
-		return NULL;
-	}
+	/**
+	 * Instantiate an I2C LCD of given type using default LCD i2c address
+	 * @param lcdType
+	 * @param lcd_addr
+	 * @param lcd_cols
+	 * @param lcd_rows
+	 * @return instantiated LCD if successful, NULL otherwise
+	 */
+	virtual LCDI2C* createLCD(LCDType lcdType, uint8_t lcd_cols, uint8_t lcd_rows);
 };
 
 #endif /* ARDUINO_LIB_LCD_LCD_FACTORY_H_ */
