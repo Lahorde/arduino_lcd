@@ -37,7 +37,7 @@ LCDI2C* LCDFactory::createLCD(LCDType lcdType, uint8_t lcd_cols, uint8_t lcd_row
 	{
 		return new LCM1602(LCM1602::LCM1602_DEFAULT_ADDRESS, lcd_cols, lcd_rows);
 	}
-	else if(FUNDUINO_I2C_LCD){
+	else if(lcdType == FUNDUINO_I2C_LCD){
 		/** default configuration */
 		return new LCM1602(LCM1602::LCM1602_DEFAULT_ADDRESS + B00000111, lcd_cols, lcd_rows);
 	}

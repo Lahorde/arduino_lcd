@@ -86,6 +86,15 @@ void MCP23008::begin() {
 #endif
 	Wire.endTransmission();
 
+	if (_rows > 1) {
+		_displayfunction |= LCD_2LINE;
+	}
+
+	// for some 1 line displays you can select a 10 pixel high font
+	if ((_charsize != 0) && (_rows == 1)) {
+		_displayfunction |= LCD_5x10DOTS;
+	}
+
 	//put the LCD into 4 bit mode
 	// start with a non-standard command to make it realize we're speaking 4-bit here
 	// per LCD datasheet, first command is a single 4-bit burst, 0011.
